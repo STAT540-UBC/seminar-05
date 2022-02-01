@@ -1,15 +1,12 @@
 ---
+title: "STAT 540 - Seminar 5: Differential Expression Analysis"
 output: github_document
 ---
 
-```{r load, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-library(tidyverse)
-library(knitr)
-library(limma)
-library(GEOquery)
-```
+## Attributions
 
-# STAT 540 - Seminar 5: Differential Expression Analysis
+This seminar was developed by Keegan Korthauer from materials previously designed by Eric Chu, Dr. Jenny Bryan, and Alice Zhu. 
+
 
 ## Learning Objectives
 
@@ -18,59 +15,57 @@ By the end of this seminar, you should
 * have a clear understanding of what differential expression is and how it can be tested
 * have practical experience browsing and manipulating real gene expression data
 * have practical experience plotting expression changes as a trajectory using ggplot2
-* have practical experience testing for differential expression in a single gene using lm()
-* have practical experience finding differential expressions in a large number of genes and across multiple covariates using limma()
-* have an intuition of how limma works in the context of “moderated” t-values
+* have practical experience testing for differential expression in a single gene using `lm()`
+* have practical experience finding differential expressions in a large number of genes and across multiple covariates using `limma()`
+* have an intuition of how limma works in the context of "moderated" t-values
 * be able to perform genome wide differential expression analysis given expression data and covariates and interpret the resulting statistics
 
 ## Packages required
 
-* [tidyverse](http://tidyverse.tidyverse.org/) (includes [ggplot2](http://ggplot2.tidyverse.org/), [dplyr](http://dplyr.tidyverse.org/), [tidyr](http://tidyr.tidyverse.org/), [readr](http://readr.tidyverse.org/), [purrr](http://purrr.tidyverse.org/), [tibble](http://tibble.tidyverse.org/))
-    * Install by running `install.packages("tidyverse", dependencies = TRUE)`
-* [limma](http://bioconductor.org/packages/release/bioc/html/limma.html)
-    * Install by running `source("https://bioconductor.org/biocLite.R")` and then `biocLite("limma")`
-* knitr
-    * Install by running `install.packages("knitr", dependencies = TRUE)`, and then load using `library(knitr)`
+We first load the packages we will use. We have previousy used `knitr`, `tidyverse` and `GEOquery`. Today, we will also use [limma](http://bioconductor.org/packages/release/bioc/html/limma.html).
+
+* If you don't have it already, first install the Bioconductor package manager package: `install.packages("BiocManager")`
+
+* Then install limma with `BiocManager::install("limma")`
+
+```{r load, echo=TRUE, results='hide', message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
+library(GEOquery)
+library(limma)
+```
+
 
 ## Functions used
 
-* **utils::read.table()** - Reads a file in table format and creates a dataframe from it.
-* **base::c()** - Combine arguments into a single data structure; for example, c(1,2,3) -> a vector containing 1, 2, and 3.
-* **base::names()** - Functions to get or set the names of an object (vector, tibble, data frame, etc).
-* **base::factor()** - The function factor is used to encode a vector as a factor.
-* **base::ncol()** - Get the number of columns in a dataframe.
-* **base::nrow()** - Get the number of rows in a dataframe.
-* **base::sort()** - Sort a vector into ascending or descending order.
-* **tibble::rownames_to_column()** - Opposite to `column_to_rownames()`; convert row names to a column inside a dataframe.
-* **tibble::column_to_rownames()** - Opposite to `rownames_to_column()`; convert a column into a dataframe's row names.
-* **tibble::as_tibble()** - Convert a dataframe to a tibble.
-* **dplyr::pivot_longer()** - Reduces the number of columns by moving values from all columns to one value per row, lengthening the data dimensions.
-* **dplyr::filter()** - Use `filter()` find rows/cases where conditions are true.
-* **dplyr::select()** - Keep only the columns/variables you mention.
-* **base::t()** - Transpose a matrix or dataframe.
-* **base::as.data.frame()** - Coerce object into a dataframe, e.g. convert a tibble into a dataframe so that rownames can be set.
-* **dplyr::left_join()** - Join two tibbles together.
-* **ggplot2::ggplot()** - Base function for using ggplot2. Lays out the invisible 'canvas' for graphing. 
-* **ggplot2::geom_boxplot()** - Geom function for drawing box plots. 
-* **ggplot2::theme()** - Modify components of a theme/appearance, e.g. rotate the x-axis by 90 degrees.
-* **ggplot2::facet_wrap()** - ggplot2 function for separating factor levels into multiple graphs. 
-* **stats::t.test()** - Performs one and two sample t-tests on vectors of data.
-* **stats::lm()** - Fit linear models. 
-* **base::summary()** - Generic function used to produce result summaries of the results of various model fitting functions.
-* **stats::aov()** - Fit an analysis of variance model by a call to lm for each stratum.
-* **knitr::kable()** - Table generator for R-Markdown. 
-* **base::all()** - Given a set of logical vectors, are all of the values true?
-* **stats::model.matrix()** - Creates a design (or model) matrix, e.g., by expanding factors to a set of summary variables. 
-* **limma::lmFit()** - Fit linear model for each gene given a series of arrays. 
-* **limma::eBayes()** - Empirical Bayes Statistics for Differential Expression. 
-* **limma::topTable()** - Extract a table of the top-ranked genes from a linear model fit.
-* **ggplot2::geom_jitter()** - Adds a small amount of random variation to the location of each point, and is a useful way of handling over-plotting caused by discreteness in smaller datasets.
-* **limma::makeContrasts()** - Construct the contrast matrix corresponding to specified contrasts of a set of parameters.
-* **limma::contrast.fit()** - Given a linear model fit to microarray data, compute estimated coefficients and standard errors for a given set of contrasts.
-* **limma::decideTests()** - Identify which genes are significantly differentially expressed for each contrast from a fit object containing p-values and test statistics.
-* **base::intersect()** - Set intersection. 
-* **base::as.character()** - Coerce object to character type, e.g. convert a factor into character.
-* **utils::head()** - Return first part of a object (a vector or dataframe). 
+* **`utils::read.table()`** - Reads a file in table format and creates a dataframe from it.
+* **`base::c()`** - Combine arguments into a single data structure; for example, c(1,2,3) -> a vector containing 1, 2, and 3.
+* **`base::names()`** - Functions to get or set the names of an object (vector, tibble, data frame, etc).
+* **`base::factor()`** - The function factor is used to encode a vector as a factor.
+* **`base::ncol()`** - Get the number of columns in a dataframe.
+* **`base::nrow()`** - Get the number of rows in a dataframe.
+* **`base::sort()`** - Sort a vector into ascending or descending order.
+* **`tibble::rownames_to_column()`** - Opposite to `column_to_rownames()`; convert row names to a column inside a dataframe.
+* **`tibble::column_to_rownames()`** - Opposite to `rownames_to_column()`; convert a column into a dataframe's row names.
+* **`tibble::as_tibble()`** - Convert a dataframe to a tibble.
+* **`dplyr::pivot_longer()`** - Reduces the number of columns by moving values from all columns to one value per row, lengthening the data dimensions.
+* **`base::t()`** - Transpose a matrix or dataframe.
+* **`stats::t.test()`** - Performs one and two sample t-tests on vectors of data.
+* **`stats::lm()`** - Fit linear models. 
+* **`base::summary()`** - Generic function used to produce result summaries of the results of various model fitting functions.
+* **`stats::aov()`** - Fit an analysis of variance model by a call to lm for each stratum.
+* **`knitr::kable()`** - Table generator for R-Markdown. 
+* **`base::all()`** - Given a set of logical vectors, are all of the values true?
+* **`stats::model.matrix()`** - Creates a design (or model) matrix, e.g., by expanding factors to a set of summary variables. 
+* **`limma::lmFit()`** - Fit linear model for each gene given a series of arrays. 
+* **`limma::eBayes()`** - Empirical Bayes Statistics for Differential Expression. 
+* **`limma::topTable()`** - Extract a table of the top-ranked genes from a linear model fit.
+* **`limma::makeContrasts()`** - Construct the contrast matrix corresponding to specified contrasts of a set of parameters.
+* **`limma::contrast.fit()`** - Given a linear model fit to microarray data, compute estimated coefficients and standard errors for a given set of contrasts.
+* **`limma::decideTests()`** - Identify which genes are significantly differentially expressed for each contrast from a fit object containing p-values and test statistics.
+* **`base::intersect()`** - Set intersection. 
+* **`base::as.character()`** - Coerce object to character type, e.g. convert a factor into character.
+* **`utils::head()`** - Return first part of a object (a vector or dataframe). 
 
 ## Part 1: Introduction
 
@@ -518,9 +513,9 @@ wildTypeDevStageFit_eset <- lmFit(eset[,wildTypeMetadata$sample_id],
 identical(wildTypeDevStageFit, wildTypeDevStageFit_eset)
 ```
 
-### topTable() is your best friend
+### `topTable()` is your best friend
 
-Now we've fit the models. We can start going through the differentially expressed genes list. We do this using the topTable() function. 
+Now we've fit the models. We can start going through the differentially expressed genes list. We do this using the `topTable()` function. 
 
 
 ```{r}
@@ -528,7 +523,7 @@ topTenGenes <- topTable(wildTypeDevStageFitEb)
 topTenGenes
 ```
 
-By default, topTable() returns the top 10 most statistically significant genes. Let's make a few plots to see how these genes were differentially expressed. 
+By default, `topTable()` returns the top 10 most statistically significant genes. Let's make a few plots to see how these genes were differentially expressed. 
 
 Let's plot the top 6 genes in our list. We will plot the expression of each gene for all the wild-type samples across all the developmental stages. 
 
@@ -545,8 +540,7 @@ topGenesExpressionData # reminder of formatted expression data looks like - for 
 
 topGenesExpressionData %>% 
   ggplot(aes(x = dev_stage, y = Expression, color = genotype)) +
-  geom_point() +
-  geom_jitter() +
+  geom_point(shape = 1, size = 2) +
   stat_summary(aes(y = Expression, group=1), fun = mean, geom="line") +
   facet_wrap(~gene)
 
@@ -567,8 +561,7 @@ plotGenes <- function(genes, exprset) {
 
   expressionDataForGenes %>% 
     ggplot(aes(x = dev_stage, y = Expression, color = genotype)) +
-    geom_point() +
-    geom_jitter() +
+    geom_point(shape = 1, size = 2) +
     stat_summary(aes(y = Expression, group=1), fun = mean, geom="line") +
     facet_wrap(~gene)
 }
@@ -579,7 +572,7 @@ plotGenes(topGenes, eset[, eset$genotype == "WT"])
 
 ```
 
-OK, now let's use topTable() again to find some boring(insignificant) genes. 
+OK, now let's use `topTable()` again to find some boring (insignificant) genes. 
 
 ```{r}
 
@@ -740,49 +733,52 @@ interactionDesign
 
 Now you have a design that allows you to compare the effect development stage for the two genotypes. The baseline is NrlKO at the E16 developmental stage. 
 
-If genotype and developmental stage are interactive, then we should see some genes which are up-regulated over development for one genotype but down regulated for the other. Specifically, these genes would have a differential expression of in the dev_stage4_weeks term in one direction and differential expression in the `genotypeWT:dev_stage4_weeks` term in the opposite direction. 
+If genotype and developmental stage are interactive, then we should see some genes which are significantly up-regulated over development for one genotype but not the other (perhaps not changed at all, or down regulated). Specifically, these genes would have a differential expression of in the dev_stage4_weeks term in one direction and differential expression in the `genotypeWT:dev_stage4_weeks` term in the opposite direction. 
 
 Let's try and find these genes!
 
 ```{r}
-
 # first fit the model
 interactionFit <- lmFit(eset[, interactionSamples$sample_id],
                         interactionDesign) %>% eBayes()
 
-cutoff <- 1e-06
-changeDirections <- decideTests(interactionFit, p.value = cutoff, method = "global") %>% 
+# make DE calls for each coefficient
+de_calls <- decideTests(interactionFit, method = "global", cutoff = 1e-6) %>% 
   as.data.frame() %>% 
   rownames_to_column("gene") %>% 
   as_tibble()
 
-# look for down regulation across developmental stages in wt but up regulation in genotypeNrlKO 
-hits <- changeDirections %>% filter(dev_stage4_weeks > 0, `genotypeWT:dev_stage4_weeks` < 0)
-hits
+# look for all genes with significant negative interaction effect and up regulation across developmental stages in KO (simple effect)
+which.flip <- de_calls %>% 
+  filter(dev_stage4_weeks > 0, `genotypeWT:dev_stage4_weeks` < 0) %>%
+  pull(gene)
+
+# sort results by strength of interaction effect; pull out the genes with opposite 
+# developmental stage simple effect and interaction effect identified above
+hits <- topTable(interactionFit, number = Inf, 
+                 coef = "genotypeWT:dev_stage4_weeks") %>% 
+  rownames_to_column("gene") %>% 
+  filter(gene %in% which.flip)
 
 # lets try plotting 4 on this list
 expressionDataForHits <- toLongerMeta(eset[, eset$sample_id %in% interactionSamples$sample_id]) %>%
   filter(gene %in% hits$gene[1:4]) 
 
-expressionDataForHits$dev_stage <- expressionDataForHits$dev_stage %>% as.numeric()
-
 expressionDataForHits %>%
   ggplot(aes(x = dev_stage, y = Expression, color = genotype)) +
-  geom_point() +
-  geom_jitter() +
-  geom_smooth(method = "lm", se = FALSE) +
-  facet_wrap(~gene)
-  
+  geom_point(shape = 1, size = 2) +
+  stat_summary(aes(y = Expression, group = genotype), fun = mean, geom = "line") +
+  facet_wrap(~ gene)
 
 ```
 
 
 ## Part 5: Deliverables
 
-* Make a similar plot but this time for 4 genes where there are no interaction between genotype and developmental stages. 
+For full marks on this seminar deliverable, construct a plot to visualize the gene expression by developmental stage (E16 and 4W only) for 4 genes that have no significant interaction between genotype and developmental stages. Add trend lines and colour by genotype. 
 
-## Attributions
+Hint: Start with the code in the previous code chunk, and modify to produce a similar plot but for 4 genes with no significant interaction.
 
-This seminar was originally developed by [Eric Chu](https://github.com/echu113) with seminar materials previously designed by Dr. Jenny Bryan and Alice Zhu. It was later modified by Keegan Korthauer.
-
-
+```{r}
+# YOUR CODE HERE
+```
