@@ -49,7 +49,7 @@ library(limma)
 -   **`utils::read.table()`** - Reads a file in table format and creates
     a dataframe from it.
 -   **`base::c()`** - Combine arguments into a single data structure;
-    for example, c(1,2,3) -> a vector containing 1, 2, and 3.
+    for example, c(1,2,3) -&gt; a vector containing 1, 2, and 3.
 -   **`base::names()`** - Functions to get or set the names of an object
     (vector, tibble, data frame, etc).
 -   **`base::factor()`** - The function factor is used to encode a
@@ -335,7 +335,7 @@ use factors where appropriate.
 
 Now, let’s turn `dev_stage` and `genotype` into factors. If your
 categories have a particular order, you can specify them using the
-“levels” variable in order of increasing value (level1 \< level 2 \<
+“levels” variable in order of increasing value (level1 &lt; level 2 &lt;
 level3 for levels = c(“level1”, “level2”, “level3”)). Here, we’ll put
 the developmental stages in chronological order.
 
@@ -425,7 +425,7 @@ we’re ready to make some plots :).
 
 One last note just before we get the party started. Notice that the row
 IDs in the expression matrix don’t look much like genes. They look like
-this: 1415670_at, 1415671_at, 1415672_at. What are these random
+this: 1415670\_at, 1415671\_at, 1415672\_at. What are these random
 gibberish? Actually these are probe IDs. Probes are segments of
 sequences used in microarray to bind to segments of cDNA molecules
 (stretches of mRNA). This means that there may be multiple probes that
@@ -478,7 +478,7 @@ longExpressionMatrix <- exprs(eset) %>%
 longExpressionMatrix
 ```
 
-    ## # A tibble: 1,758,939 × 3
+    ## # A tibble: 1,758,939 x 3
     ##    gene       sample_id Expression
     ##    <chr>      <chr>          <dbl>
     ##  1 1415670_at GSM92610        7.11
@@ -491,7 +491,7 @@ longExpressionMatrix
     ##  8 1415670_at GSM92617        7.22
     ##  9 1415670_at GSM92618        7.22
     ## 10 1415670_at GSM92619        7.12
-    ## # … with 1,758,929 more rows
+    ## # ... with 1,758,929 more rows
 
 Note we’ve transformed the 45101 by 39 matrix to a single column with
 length 1759939. So we have one row for every gene and sample
@@ -523,7 +523,7 @@ Okay, now, let’s try using this function.
 toLonger(exprs(eset))
 ```
 
-    ## # A tibble: 1,758,939 × 3
+    ## # A tibble: 1,758,939 x 3
     ##    gene       sample_id Expression
     ##    <chr>      <chr>          <dbl>
     ##  1 1415670_at GSM92610        7.11
@@ -536,7 +536,7 @@ toLonger(exprs(eset))
     ##  8 1415670_at GSM92617        7.22
     ##  9 1415670_at GSM92618        7.22
     ## 10 1415670_at GSM92619        7.12
-    ## # … with 1,758,929 more rows
+    ## # ... with 1,758,929 more rows
 
 Yay! Now we can use the `toLonger` function to pull out the long format
 expression data.
@@ -572,7 +572,7 @@ More plots!
 
 ### What does differential expression look like?
 
-As an example, let’s first take a look at gene 1429226_at. We will plot
+As an example, let’s first take a look at gene 1429226\_at. We will plot
 the expression of this gene for every sample, grouped by genotype (wt
 vs. NrlKO).
 
@@ -603,7 +603,7 @@ expressionDataForGene <- expressionDataForGene %>%
 expressionDataForGene
 ```
 
-    ## # A tibble: 78 × 5
+    ## # A tibble: 78 x 5
     ##    gene       sample_id Expression dev_stage genotype
     ##    <chr>      <chr>          <dbl> <fct>     <fct>   
     ##  1 1416119_at GSM92610        9.00 4_weeks   NrlKO   
@@ -616,7 +616,7 @@ expressionDataForGene
     ##  8 1416119_at GSM92617        9.45 P10       NrlKO   
     ##  9 1416119_at GSM92618       10.1  P10       NrlKO   
     ## 10 1416119_at GSM92619        9.55 P10       NrlKO   
-    ## # … with 68 more rows
+    ## # ... with 68 more rows
 
 Beautiful! Now, what we have is one data frame that contains all the
 metadata for all samples as well as the gene expression for the genes
@@ -645,7 +645,7 @@ toLongerMeta <- function(expset) {
 toLongerMeta(eset)
 ```
 
-    ## # A tibble: 1,758,939 × 5
+    ## # A tibble: 1,758,939 x 5
     ##    gene       sample_id Expression dev_stage genotype
     ##    <chr>      <chr>          <dbl> <fct>     <fct>   
     ##  1 1415670_at GSM92610        7.11 4_weeks   NrlKO   
@@ -658,7 +658,7 @@ toLongerMeta(eset)
     ##  8 1415670_at GSM92617        7.22 P10       NrlKO   
     ##  9 1415670_at GSM92618        7.22 P10       NrlKO   
     ## 10 1415670_at GSM92619        7.12 P10       NrlKO   
-    ## # … with 1,758,929 more rows
+    ## # ... with 1,758,929 more rows
 
 Finally time for more plots. Not lying, promise.
 
@@ -676,8 +676,8 @@ expressionDataForGene %>%
 Take a moment to look at these plots. Do you think one of these genes is
 differentially expressed across wt and NrlKO conditions?
 
-If you think that **1431708_a\_at** on the right is a hit while
-**1416119_at** on the left is pretty boring, you’d be right. But why do
+If you think that **1431708\_a\_at** on the right is a hit while
+**1416119\_at** on the left is pretty boring, you’d be right. But why do
 you think that? Hint: mean and variance.
 
 ### The two-group t-test
@@ -710,9 +710,9 @@ t.test(Expression ~ genotype, boringGene)
     ## mean in group NrlKO    mean in group WT 
     ##            9.934790            9.893094
 
-As expected, we obtain a p-value of \>0.8. Not so significant. This gene
-is probably not differentially expressed across the two genotypes, as
-you suspected based on the plots above.
+As expected, we obtain a p-value of &gt;0.8. Not so significant. This
+gene is probably not differentially expressed across the two genotypes,
+as you suspected based on the plots above.
 
 Now let’s run the t-test on the interesting gene.
 
@@ -733,8 +733,8 @@ t.test(Expression ~ genotype, interestingGene)
     ## mean in group NrlKO    mean in group WT 
     ##            7.577689            9.554522
 
-And, we get a p-value \< 7.35e-12. An extremely tiny p-value!… Suppose,
-we set the significance threshold at 0.001, this p-value is
+And, we get a p-value &lt; 7.35e-12. An extremely tiny p-value!…
+Suppose, we set the significance threshold at 0.001, this p-value is
 statistically significant. We can also see that the mean expression
 value between the two conditions of this gene \~=2.
 
@@ -782,7 +782,7 @@ summary(lm(Expression ~ genotype, boringGene))
     ## Multiple R-squared:  0.0008822,  Adjusted R-squared:  -0.02612 
     ## F-statistic: 0.03267 on 1 and 37 DF,  p-value: 0.8576
 
-We get a p-value of \>0.85, which is what we got with the t-test.
+We get a p-value of &gt;0.85, which is what we got with the t-test.
 
 Let’s try it with the interesting gene.
 
@@ -824,7 +824,7 @@ regression.
 
 This is ANOVA. We use it to test if at least one developmental stage is
 different among all developmental stages (multiple groups) for
-1431708_a\_at.
+1431708\_a\_at.
 
 ``` r
 interestingGene <- toLongerMeta(eset) %>% filter(gene == "1431708_a_at")
@@ -1005,7 +1005,7 @@ Now we have filtered for only wild-type samples in both the samples
 metadata and the expression matrix.
 
 Next we want to construct the design matrix. The design matrix dictates
-how the categorical covariates are parametized in the linear model. If
+how the categorical covariates are parameterized in the linear model. If
 you’re not sure what this means, make sure to get help. This is an
 important concept! We also recommend reading chapter 3 of [An
 Introduction to Statistical
@@ -1059,35 +1059,35 @@ designMatrix <- model.matrix(~dev_stage, wildTypeMetadata)
 head(designMatrix, 10) %>% kable()
 ```
 
-|          | (Intercept) | dev_stageP2 | dev_stageP6 | dev_stageP10 | dev_stage4_weeks |
-|:---------|------------:|------------:|------------:|-------------:|-----------------:|
-| GSM92629 |           1 |           0 |           0 |            0 |                1 |
-| GSM92630 |           1 |           0 |           0 |            0 |                1 |
-| GSM92631 |           1 |           0 |           0 |            0 |                1 |
-| GSM92632 |           1 |           0 |           0 |            0 |                1 |
-| GSM92633 |           1 |           0 |           0 |            0 |                0 |
-| GSM92634 |           1 |           0 |           0 |            0 |                0 |
-| GSM92635 |           1 |           0 |           0 |            0 |                0 |
-| GSM92636 |           1 |           0 |           0 |            0 |                0 |
-| GSM92637 |           1 |           0 |           0 |            1 |                0 |
-| GSM92638 |           1 |           0 |           0 |            1 |                0 |
+|          | (Intercept) | dev\_stageP2 | dev\_stageP6 | dev\_stageP10 | dev\_stage4\_weeks |
+|:---------|------------:|-------------:|-------------:|--------------:|-------------------:|
+| GSM92629 |           1 |            0 |            0 |             0 |                  1 |
+| GSM92630 |           1 |            0 |            0 |             0 |                  1 |
+| GSM92631 |           1 |            0 |            0 |             0 |                  1 |
+| GSM92632 |           1 |            0 |            0 |             0 |                  1 |
+| GSM92633 |           1 |            0 |            0 |             0 |                  0 |
+| GSM92634 |           1 |            0 |            0 |             0 |                  0 |
+| GSM92635 |           1 |            0 |            0 |             0 |                  0 |
+| GSM92636 |           1 |            0 |            0 |             0 |                  0 |
+| GSM92637 |           1 |            0 |            0 |             1 |                  0 |
+| GSM92638 |           1 |            0 |            0 |             1 |                  0 |
 
 ``` r
 head(wildTypeMetadata, 10) %>% kable()
 ```
 
-|          | sample_id | genotype | dev_stage |
-|:---------|:----------|:---------|:----------|
-| GSM92629 | GSM92629  | WT       | 4_weeks   |
-| GSM92630 | GSM92630  | WT       | 4_weeks   |
-| GSM92631 | GSM92631  | WT       | 4_weeks   |
-| GSM92632 | GSM92632  | WT       | 4_weeks   |
-| GSM92633 | GSM92633  | WT       | E16       |
-| GSM92634 | GSM92634  | WT       | E16       |
-| GSM92635 | GSM92635  | WT       | E16       |
-| GSM92636 | GSM92636  | WT       | E16       |
-| GSM92637 | GSM92637  | WT       | P10       |
-| GSM92638 | GSM92638  | WT       | P10       |
+|          | sample\_id | genotype | dev\_stage |
+|:---------|:-----------|:---------|:-----------|
+| GSM92629 | GSM92629   | WT       | 4\_weeks   |
+| GSM92630 | GSM92630   | WT       | 4\_weeks   |
+| GSM92631 | GSM92631   | WT       | 4\_weeks   |
+| GSM92632 | GSM92632   | WT       | 4\_weeks   |
+| GSM92633 | GSM92633   | WT       | E16        |
+| GSM92634 | GSM92634   | WT       | E16        |
+| GSM92635 | GSM92635   | WT       | E16        |
+| GSM92636 | GSM92636   | WT       | E16        |
+| GSM92637 | GSM92637   | WT       | P10        |
+| GSM92638 | GSM92638   | WT       | P10        |
 
 Notice that E16 is taken to be the baseline and everything else is
 defined relative to it.
@@ -1177,7 +1177,7 @@ topGenesExpressionData <- toLongerMeta(eset) %>%
 topGenesExpressionData # reminder of formatted expression data looks like - for easy graphing
 ```
 
-    ## # A tibble: 120 × 5
+    ## # A tibble: 120 x 5
     ##    gene       sample_id Expression dev_stage genotype
     ##    <chr>      <chr>          <dbl> <fct>     <fct>   
     ##  1 1416041_at GSM92629       13.1  4_weeks   WT      
@@ -1190,7 +1190,7 @@ topGenesExpressionData # reminder of formatted expression data looks like - for 
     ##  8 1416041_at GSM92636        8.29 E16       WT      
     ##  9 1416041_at GSM92637        8.13 P10       WT      
     ## 10 1416041_at GSM92638        8.16 P10       WT      
-    ## # … with 110 more rows
+    ## # ... with 110 more rows
 
 ``` r
 topGenesExpressionData %>% 
@@ -1294,7 +1294,7 @@ cutoffs, etc.
 Now, remember that everything was assessed relative to the baseline
 (E16). What if we’re particularly interested in finding the genes that
 are differentially expressed from developmental stages P6 to P10? Or
-from P10 to 4_weeks? Or both?
+from P10 to 4\_weeks? Or both?
 
 This is where the contrast matrix comes in. Again, review the lecture
 slides or get help from TAs if you’re not sure what contrasts are.
@@ -1307,12 +1307,12 @@ contrast using `contrast.fit()`, apply `ebayes()` to calculate moderated
 statistics again, and then use `topTable()` to get the results.
 
 Let’s try to distinguish genes that have stable expression at the last
-three developmental stages (P6, P10, and 4_weeks) from those that do
-not. If expression doesn’t change from P6 to P10 to 4_weeks, then the
+three developmental stages (P6, P10, and 4\_weeks) from those that do
+not. If expression doesn’t change from P6 to P10 to 4\_weeks, then the
 effects for all 3 of those developmental stages should be the same. That
 means that the difference between the P10 and P6 effects is zero and
-ditto for the difference between 4_weeks effect and P10 (or P6, for that
-matter). Let’s form these contrasts.
+ditto for the difference between 4\_weeks effect and P10 (or P6, for
+that matter). Let’s form these contrasts.
 
 ``` r
 # construct the contrast matrix
@@ -1390,9 +1390,9 @@ plotGenes(rownames(contrastGenes)[1:6], eset[, eset$genotype == "WT"])
 ![](sm5_differential_expression_analysis_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
 So far, so good. These 6 probes show little expression change from P6 to
-P10 and a strong increase from P10 to 4_weeks. I would like to find some
-where there’s a change in each case but perhaps in opposite direction.
-Let’s press on.
+P10 and a strong increase from P10 to 4\_weeks. I would like to find
+some where there’s a change in each case but perhaps in opposite
+direction. Let’s press on.
 
 Let’s use `decideTests()` to adjust the p-values for both contrasts
 globally, i.e. all together and then threshold them at a cutoff of
@@ -1410,7 +1410,7 @@ summary(wtResCont)
     ## Up           0             67
 
 We see there are 4 probes that go down from P6 to P10 and no hits going
-the other way. There are 8 probes that go down from P10 to 4_weeks and
+the other way. There are 8 probes that go down from P10 to 4\_weeks and
 67 going the other way. Let’s try to pull out various hits and plot
 their data.
 
@@ -1439,7 +1439,7 @@ plotGenes(hits1$gene, eset[, eset$genotype == "WT"])
 
 ![](sm5_differential_expression_analysis_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-Here are 4 of the 8 that decline from P10 to 4_weeks.
+Here are 4 of the 8 that decline from P10 to 4\_weeks.
 
 ``` r
 hits2 <- wtResCont %>% 
@@ -1565,7 +1565,7 @@ If genotype and developmental stage are interactive, then we should see
 some genes which are significantly up-regulated over development for one
 genotype but not the other (perhaps not changed at all, or down
 regulated). Specifically, these genes would have a differential
-expression of in the dev_stage4_weeks term in one direction and
+expression of in the dev\_stage4\_weeks term in one direction and
 differential expression in the `genotypeWT:dev_stage4_weeks` term in the
 opposite direction.
 

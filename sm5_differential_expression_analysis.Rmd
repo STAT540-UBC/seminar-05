@@ -463,7 +463,7 @@ wildTypeExpressionMatrix <- exprs(eset[, wildTypeMetadata$sample_id])
 
 Now we have filtered for only wild-type samples in both the samples metadata and the expression matrix. 
 
-Next we want to construct the design matrix. The design matrix dictates how the categorical covariates are parametized in the linear model. If you're not sure what this means, make sure to get help. This is an important concept! We also recommend reading chapter 3 of [An Introduction to Statistical Learning](http://www-bcf.usc.edu/~gareth/ISL/index.html) by Gareth et al. 
+Next we want to construct the design matrix. The design matrix dictates how the categorical covariates are parameterized in the linear model. If you're not sure what this means, make sure to get help. This is an important concept! We also recommend reading chapter 3 of [An Introduction to Statistical Learning](http://www-bcf.usc.edu/~gareth/ISL/index.html) by Gareth et al. 
 
 Before we actually construct the design matrix, there is one thing we need to check. That is, the samples are ordered identically in the samples metadata data frame as well as the expression matrix. The design matrix is constructed based on the order of the samples metadata data frame and is used to conduct differential expression analysis on the expression matrix. This consistency is absolutely critical. As soon as the two data frame go out of sync, the comparisons is no longer accurate.
 
