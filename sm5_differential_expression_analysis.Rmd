@@ -436,11 +436,13 @@ limma fixes this by using moderated t-values where the "typical variance" is use
 
 Multiple testing is another problem that we need to account for. Think about what the p-value actually measures. By definition, the p-value is the **probability of making the observation you made by chance**. Therefore, the p-value of 0.05 suggests that you would get the observation simply by chance 0.05 of the time. Interestingly, 0.05 of 20,000 genes is 1000 genes! If statistical significance was taken at face value, then you would end up with 1000 differentially expressed genes, when none really exist.
 
+Here is an XKCD joke on multiple hypothesis testing [image_MHT](https://imgs.xkcd.com/comics/significant.png)
+
 The capability to handle multiple testing is also built directly into limma. By using the function topTable(), we can make multiple testing adjustments to the significance measures. Limma also provides multiple methods for doing these adjustments. Make sure to go back to the lecture slides if you're feeling fuzzy the concept of multiple testing. 
 
 ### Limma in action
 
-Now we demonstrate how to use limma for performing large-scale differential expression analysis. 
+Now we demonstrate how to use limma for performing large-scale differential expression analysis .
 
 Here, we look for genes differentially expressed across different developmental stages. We first constrain our search to the wild-type samples, excluding any effect that the alternative genotype may have. Using this as an example, we showcase the overall workflow of limma and its various features. Subsequently, we include the alternative genotype samples to show interaction effects. 
 

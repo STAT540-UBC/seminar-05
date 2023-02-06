@@ -10,21 +10,20 @@ designed by Eric Chu, Dr. Jenny Bryan, and Alice Zhu.
 
 By the end of this seminar, you should
 
--   have a clear understanding of what differential expression is and
-    how it can be tested
--   have practical experience browsing and manipulating real gene
-    expression data
--   have practical experience plotting expression changes as a
-    trajectory using ggplot2
--   have practical experience testing for differential expression in a
-    single gene using `lm()`
--   have practical experience finding differential expressions in a
-    large number of genes and across multiple covariates using `limma()`
--   have an intuition of how limma works in the context of “moderated”
-    t-values
--   be able to perform genome wide differential expression analysis
-    given expression data and covariates and interpret the resulting
-    statistics
+- have a clear understanding of what differential expression is and how
+  it can be tested
+- have practical experience browsing and manipulating real gene
+  expression data
+- have practical experience plotting expression changes as a trajectory
+  using ggplot2
+- have practical experience testing for differential expression in a
+  single gene using `lm()`
+- have practical experience finding differential expressions in a large
+  number of genes and across multiple covariates using `limma()`
+- have an intuition of how limma works in the context of “moderated”
+  t-values
+- be able to perform genome wide differential expression analysis given
+  expression data and covariates and interpret the resulting statistics
 
 ## Packages required
 
@@ -32,10 +31,10 @@ We first load the packages we will use. We have previousy used `knitr`,
 `tidyverse` and `GEOquery`. Today, we will also use
 [limma](http://bioconductor.org/packages/release/bioc/html/limma.html).
 
--   If you don’t have it already, first install the Bioconductor package
-    manager package: `install.packages("BiocManager")`
+- If you don’t have it already, first install the Bioconductor package
+  manager package: `install.packages("BiocManager")`
 
--   Then install limma with `BiocManager::install("limma")`
+- Then install limma with `BiocManager::install("limma")`
 
 ``` r
 library(knitr)
@@ -46,60 +45,58 @@ library(limma)
 
 ## Functions used
 
--   **`utils::read.table()`** - Reads a file in table format and creates
-    a dataframe from it.
--   **`base::c()`** - Combine arguments into a single data structure;
-    for example, c(1,2,3) -&gt; a vector containing 1, 2, and 3.
--   **`base::names()`** - Functions to get or set the names of an object
-    (vector, tibble, data frame, etc).
--   **`base::factor()`** - The function factor is used to encode a
-    vector as a factor.
--   **`base::ncol()`** - Get the number of columns in a dataframe.
--   **`base::nrow()`** - Get the number of rows in a dataframe.
--   **`base::sort()`** - Sort a vector into ascending or descending
-    order.
--   **`tibble::rownames_to_column()`** - Opposite to
-    `column_to_rownames()`; convert row names to a column inside a
-    dataframe.
--   **`tibble::column_to_rownames()`** - Opposite to
-    `rownames_to_column()`; convert a column into a dataframe’s row
-    names.
--   **`tibble::as_tibble()`** - Convert a dataframe to a tibble.
--   **`dplyr::pivot_longer()`** - Reduces the number of columns by
-    moving values from all columns to one value per row, lengthening the
-    data dimensions.
--   **`base::t()`** - Transpose a matrix or dataframe.
--   **`stats::t.test()`** - Performs one and two sample t-tests on
-    vectors of data.
--   **`stats::lm()`** - Fit linear models.
--   **`base::summary()`** - Generic function used to produce result
-    summaries of the results of various model fitting functions.
--   **`stats::aov()`** - Fit an analysis of variance model by a call to
-    lm for each stratum.
--   **`knitr::kable()`** - Table generator for R-Markdown.
--   **`base::all()`** - Given a set of logical vectors, are all of the
-    values true?
--   **`stats::model.matrix()`** - Creates a design (or model) matrix,
-    e.g., by expanding factors to a set of summary variables.
--   **`limma::lmFit()`** - Fit linear model for each gene given a series
-    of arrays.
--   **`limma::eBayes()`** - Empirical Bayes Statistics for Differential
-    Expression.
--   **`limma::topTable()`** - Extract a table of the top-ranked genes
-    from a linear model fit.
--   **`limma::makeContrasts()`** - Construct the contrast matrix
-    corresponding to specified contrasts of a set of parameters.
--   **`limma::contrast.fit()`** - Given a linear model fit to microarray
-    data, compute estimated coefficients and standard errors for a given
-    set of contrasts.
--   **`limma::decideTests()`** - Identify which genes are significantly
-    differentially expressed for each contrast from a fit object
-    containing p-values and test statistics.
--   **`base::intersect()`** - Set intersection.
--   **`base::as.character()`** - Coerce object to character type,
-    e.g. convert a factor into character.
--   **`utils::head()`** - Return first part of a object (a vector or
-    dataframe).
+- **`utils::read.table()`** - Reads a file in table format and creates a
+  dataframe from it.
+- **`base::c()`** - Combine arguments into a single data structure; for
+  example, c(1,2,3) -\> a vector containing 1, 2, and 3.
+- **`base::names()`** - Functions to get or set the names of an object
+  (vector, tibble, data frame, etc).
+- **`base::factor()`** - The function factor is used to encode a vector
+  as a factor.
+- **`base::ncol()`** - Get the number of columns in a dataframe.
+- **`base::nrow()`** - Get the number of rows in a dataframe.
+- **`base::sort()`** - Sort a vector into ascending or descending order.
+- **`tibble::rownames_to_column()`** - Opposite to
+  `column_to_rownames()`; convert row names to a column inside a
+  dataframe.
+- **`tibble::column_to_rownames()`** - Opposite to
+  `rownames_to_column()`; convert a column into a dataframe’s row names.
+- **`tibble::as_tibble()`** - Convert a dataframe to a tibble.
+- **`dplyr::pivot_longer()`** - Reduces the number of columns by moving
+  values from all columns to one value per row, lengthening the data
+  dimensions.
+- **`base::t()`** - Transpose a matrix or dataframe.
+- **`stats::t.test()`** - Performs one and two sample t-tests on vectors
+  of data.
+- **`stats::lm()`** - Fit linear models.
+- **`base::summary()`** - Generic function used to produce result
+  summaries of the results of various model fitting functions.
+- **`stats::aov()`** - Fit an analysis of variance model by a call to lm
+  for each stratum.
+- **`knitr::kable()`** - Table generator for R-Markdown.
+- **`base::all()`** - Given a set of logical vectors, are all of the
+  values true?
+- **`stats::model.matrix()`** - Creates a design (or model) matrix,
+  e.g., by expanding factors to a set of summary variables.
+- **`limma::lmFit()`** - Fit linear model for each gene given a series
+  of arrays.
+- **`limma::eBayes()`** - Empirical Bayes Statistics for Differential
+  Expression.
+- **`limma::topTable()`** - Extract a table of the top-ranked genes from
+  a linear model fit.
+- **`limma::makeContrasts()`** - Construct the contrast matrix
+  corresponding to specified contrasts of a set of parameters.
+- **`limma::contrast.fit()`** - Given a linear model fit to microarray
+  data, compute estimated coefficients and standard errors for a given
+  set of contrasts.
+- **`limma::decideTests()`** - Identify which genes are significantly
+  differentially expressed for each contrast from a fit object
+  containing p-values and test statistics.
+- **`base::intersect()`** - Set intersection.
+- **`base::as.character()`** - Coerce object to character type,
+  e.g. convert a factor into character.
+- **`utils::head()`** - Return first part of a object (a vector or
+  dataframe).
 
 ## Part 1: Introduction
 
@@ -160,6 +157,15 @@ eset <- getGEO("GSE4051", getGPL = FALSE)[[1]]
     ## Found 1 file(s)
 
     ## GSE4051_series_matrix.txt.gz
+
+    ## Rows: 45101 Columns: 40
+    ## -- Column specification --------------------------------------------------------
+    ## Delimiter: "\t"
+    ## chr  (1): ID_REF
+    ## dbl (39): GSM92610, GSM92611, GSM92612, GSM92613, GSM92614, GSM92615, GSM926...
+    ## 
+    ## i Use `spec()` to retrieve the full column specification for this data.
+    ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 ``` r
 eset
@@ -335,7 +341,7 @@ use factors where appropriate.
 
 Now, let’s turn `dev_stage` and `genotype` into factors. If your
 categories have a particular order, you can specify them using the
-“levels” variable in order of increasing value (level1 &lt; level 2 &lt;
+“levels” variable in order of increasing value (level1 \< level 2 \<
 level3 for levels = c(“level1”, “level2”, “level3”)). Here, we’ll put
 the developmental stages in chronological order.
 
@@ -425,7 +431,7 @@ we’re ready to make some plots :).
 
 One last note just before we get the party started. Notice that the row
 IDs in the expression matrix don’t look much like genes. They look like
-this: 1415670\_at, 1415671\_at, 1415672\_at. What are these random
+this: 1415670_at, 1415671_at, 1415672_at. What are these random
 gibberish? Actually these are probe IDs. Probes are segments of
 sequences used in microarray to bind to segments of cDNA molecules
 (stretches of mRNA). This means that there may be multiple probes that
@@ -572,7 +578,7 @@ More plots!
 
 ### What does differential expression look like?
 
-As an example, let’s first take a look at gene 1429226\_at. We will plot
+As an example, let’s first take a look at gene 1429226_at. We will plot
 the expression of this gene for every sample, grouped by genotype (wt
 vs. NrlKO).
 
@@ -676,8 +682,8 @@ expressionDataForGene %>%
 Take a moment to look at these plots. Do you think one of these genes is
 differentially expressed across wt and NrlKO conditions?
 
-If you think that **1431708\_a\_at** on the right is a hit while
-**1416119\_at** on the left is pretty boring, you’d be right. But why do
+If you think that **1431708_a\_at** on the right is a hit while
+**1416119_at** on the left is pretty boring, you’d be right. But why do
 you think that? Hint: mean and variance.
 
 ### The two-group t-test
@@ -703,16 +709,16 @@ t.test(Expression ~ genotype, boringGene)
     ## 
     ## data:  Expression by genotype
     ## t = 0.18154, df = 36.528, p-value = 0.8569
-    ## alternative hypothesis: true difference in means between group NrlKO and group WT is not equal to 0
+    ## alternative hypothesis: true difference in means is not equal to 0
     ## 95 percent confidence interval:
     ##  -0.4238796  0.5072706
     ## sample estimates:
     ## mean in group NrlKO    mean in group WT 
     ##            9.934790            9.893094
 
-As expected, we obtain a p-value of &gt;0.8. Not so significant. This
-gene is probably not differentially expressed across the two genotypes,
-as you suspected based on the plots above.
+As expected, we obtain a p-value of \>0.8. Not so significant. This gene
+is probably not differentially expressed across the two genotypes, as
+you suspected based on the plots above.
 
 Now let’s run the t-test on the interesting gene.
 
@@ -726,15 +732,15 @@ t.test(Expression ~ genotype, interestingGene)
     ## 
     ## data:  Expression by genotype
     ## t = -9.8395, df = 36.89, p-value = 7.349e-12
-    ## alternative hypothesis: true difference in means between group NrlKO and group WT is not equal to 0
+    ## alternative hypothesis: true difference in means is not equal to 0
     ## 95 percent confidence interval:
     ##  -2.383952 -1.569715
     ## sample estimates:
     ## mean in group NrlKO    mean in group WT 
     ##            7.577689            9.554522
 
-And, we get a p-value &lt; 7.35e-12. An extremely tiny p-value!…
-Suppose, we set the significance threshold at 0.001, this p-value is
+And, we get a p-value \< 7.35e-12. An extremely tiny p-value!… Suppose,
+we set the significance threshold at 0.001, this p-value is
 statistically significant. We can also see that the mean expression
 value between the two conditions of this gene \~=2.
 
@@ -782,7 +788,7 @@ summary(lm(Expression ~ genotype, boringGene))
     ## Multiple R-squared:  0.0008822,  Adjusted R-squared:  -0.02612 
     ## F-statistic: 0.03267 on 1 and 37 DF,  p-value: 0.8576
 
-We get a p-value of &gt;0.85, which is what we got with the t-test.
+We get a p-value of \>0.85, which is what we got with the t-test.
 
 Let’s try it with the interesting gene.
 
@@ -824,7 +830,7 @@ regression.
 
 This is ANOVA. We use it to test if at least one developmental stage is
 different among all developmental stages (multiple groups) for
-1431708\_a\_at.
+1431708_a\_at.
 
 ``` r
 interestingGene <- toLongerMeta(eset) %>% filter(gene == "1431708_a_at")
@@ -964,6 +970,9 @@ observation simply by chance 0.05 of the time. Interestingly, 0.05 of
 face value, then you would end up with 1000 differentially expressed
 genes, when none really exist.
 
+Here is an XKCD joke on multiple hypothesis testing
+[image_MHT](https://imgs.xkcd.com/comics/significant.png)
+
 The capability to handle multiple testing is also built directly into
 limma. By using the function topTable(), we can make multiple testing
 adjustments to the significance measures. Limma also provides multiple
@@ -973,7 +982,7 @@ slides if you’re feeling fuzzy the concept of multiple testing.
 ### Limma in action
 
 Now we demonstrate how to use limma for performing large-scale
-differential expression analysis.
+differential expression analysis .
 
 Here, we look for genes differentially expressed across different
 developmental stages. We first constrain our search to the wild-type
@@ -1059,35 +1068,35 @@ designMatrix <- model.matrix(~dev_stage, wildTypeMetadata)
 head(designMatrix, 10) %>% kable()
 ```
 
-|          | (Intercept) | dev\_stageP2 | dev\_stageP6 | dev\_stageP10 | dev\_stage4\_weeks |
-|:---------|------------:|-------------:|-------------:|--------------:|-------------------:|
-| GSM92629 |           1 |            0 |            0 |             0 |                  1 |
-| GSM92630 |           1 |            0 |            0 |             0 |                  1 |
-| GSM92631 |           1 |            0 |            0 |             0 |                  1 |
-| GSM92632 |           1 |            0 |            0 |             0 |                  1 |
-| GSM92633 |           1 |            0 |            0 |             0 |                  0 |
-| GSM92634 |           1 |            0 |            0 |             0 |                  0 |
-| GSM92635 |           1 |            0 |            0 |             0 |                  0 |
-| GSM92636 |           1 |            0 |            0 |             0 |                  0 |
-| GSM92637 |           1 |            0 |            0 |             1 |                  0 |
-| GSM92638 |           1 |            0 |            0 |             1 |                  0 |
+|          | (Intercept) | dev_stageP2 | dev_stageP6 | dev_stageP10 | dev_stage4_weeks |
+|:---------|------------:|------------:|------------:|-------------:|-----------------:|
+| GSM92629 |           1 |           0 |           0 |            0 |                1 |
+| GSM92630 |           1 |           0 |           0 |            0 |                1 |
+| GSM92631 |           1 |           0 |           0 |            0 |                1 |
+| GSM92632 |           1 |           0 |           0 |            0 |                1 |
+| GSM92633 |           1 |           0 |           0 |            0 |                0 |
+| GSM92634 |           1 |           0 |           0 |            0 |                0 |
+| GSM92635 |           1 |           0 |           0 |            0 |                0 |
+| GSM92636 |           1 |           0 |           0 |            0 |                0 |
+| GSM92637 |           1 |           0 |           0 |            1 |                0 |
+| GSM92638 |           1 |           0 |           0 |            1 |                0 |
 
 ``` r
 head(wildTypeMetadata, 10) %>% kable()
 ```
 
-|          | sample\_id | genotype | dev\_stage |
-|:---------|:-----------|:---------|:-----------|
-| GSM92629 | GSM92629   | WT       | 4\_weeks   |
-| GSM92630 | GSM92630   | WT       | 4\_weeks   |
-| GSM92631 | GSM92631   | WT       | 4\_weeks   |
-| GSM92632 | GSM92632   | WT       | 4\_weeks   |
-| GSM92633 | GSM92633   | WT       | E16        |
-| GSM92634 | GSM92634   | WT       | E16        |
-| GSM92635 | GSM92635   | WT       | E16        |
-| GSM92636 | GSM92636   | WT       | E16        |
-| GSM92637 | GSM92637   | WT       | P10        |
-| GSM92638 | GSM92638   | WT       | P10        |
+|          | sample_id | genotype | dev_stage |
+|:---------|:----------|:---------|:----------|
+| GSM92629 | GSM92629  | WT       | 4_weeks   |
+| GSM92630 | GSM92630  | WT       | 4_weeks   |
+| GSM92631 | GSM92631  | WT       | 4_weeks   |
+| GSM92632 | GSM92632  | WT       | 4_weeks   |
+| GSM92633 | GSM92633  | WT       | E16       |
+| GSM92634 | GSM92634  | WT       | E16       |
+| GSM92635 | GSM92635  | WT       | E16       |
+| GSM92636 | GSM92636  | WT       | E16       |
+| GSM92637 | GSM92637  | WT       | P10       |
+| GSM92638 | GSM92638  | WT       | P10       |
 
 Notice that E16 is taken to be the baseline and everything else is
 defined relative to it.
@@ -1294,7 +1303,7 @@ cutoffs, etc.
 Now, remember that everything was assessed relative to the baseline
 (E16). What if we’re particularly interested in finding the genes that
 are differentially expressed from developmental stages P6 to P10? Or
-from P10 to 4\_weeks? Or both?
+from P10 to 4_weeks? Or both?
 
 This is where the contrast matrix comes in. Again, review the lecture
 slides or get help from TAs if you’re not sure what contrasts are.
@@ -1307,12 +1316,12 @@ contrast using `contrast.fit()`, apply `ebayes()` to calculate moderated
 statistics again, and then use `topTable()` to get the results.
 
 Let’s try to distinguish genes that have stable expression at the last
-three developmental stages (P6, P10, and 4\_weeks) from those that do
-not. If expression doesn’t change from P6 to P10 to 4\_weeks, then the
+three developmental stages (P6, P10, and 4_weeks) from those that do
+not. If expression doesn’t change from P6 to P10 to 4_weeks, then the
 effects for all 3 of those developmental stages should be the same. That
 means that the difference between the P10 and P6 effects is zero and
-ditto for the difference between 4\_weeks effect and P10 (or P6, for
-that matter). Let’s form these contrasts.
+ditto for the difference between 4_weeks effect and P10 (or P6, for that
+matter). Let’s form these contrasts.
 
 ``` r
 # construct the contrast matrix
@@ -1390,9 +1399,9 @@ plotGenes(rownames(contrastGenes)[1:6], eset[, eset$genotype == "WT"])
 ![](sm5_differential_expression_analysis_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
 So far, so good. These 6 probes show little expression change from P6 to
-P10 and a strong increase from P10 to 4\_weeks. I would like to find
-some where there’s a change in each case but perhaps in opposite
-direction. Let’s press on.
+P10 and a strong increase from P10 to 4_weeks. I would like to find some
+where there’s a change in each case but perhaps in opposite direction.
+Let’s press on.
 
 Let’s use `decideTests()` to adjust the p-values for both contrasts
 globally, i.e. all together and then threshold them at a cutoff of
@@ -1410,7 +1419,7 @@ summary(wtResCont)
     ## Up           0             67
 
 We see there are 4 probes that go down from P6 to P10 and no hits going
-the other way. There are 8 probes that go down from P10 to 4\_weeks and
+the other way. There are 8 probes that go down from P10 to 4_weeks and
 67 going the other way. Let’s try to pull out various hits and plot
 their data.
 
@@ -1439,7 +1448,7 @@ plotGenes(hits1$gene, eset[, eset$genotype == "WT"])
 
 ![](sm5_differential_expression_analysis_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
 
-Here are 4 of the 8 that decline from P10 to 4\_weeks.
+Here are 4 of the 8 that decline from P10 to 4_weeks.
 
 ``` r
 hits2 <- wtResCont %>% 
@@ -1565,7 +1574,7 @@ If genotype and developmental stage are interactive, then we should see
 some genes which are significantly up-regulated over development for one
 genotype but not the other (perhaps not changed at all, or down
 regulated). Specifically, these genes would have a differential
-expression of in the dev\_stage4\_weeks term in one direction and
+expression of in the dev_stage4_weeks term in one direction and
 differential expression in the `genotypeWT:dev_stage4_weeks` term in the
 opposite direction.
 
