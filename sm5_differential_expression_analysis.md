@@ -158,15 +158,6 @@ eset <- getGEO("GSE4051", getGPL = FALSE)[[1]]
 
     ## GSE4051_series_matrix.txt.gz
 
-    ## Rows: 45101 Columns: 40
-    ## -- Column specification --------------------------------------------------------
-    ## Delimiter: "\t"
-    ## chr  (1): ID_REF
-    ## dbl (39): GSM92610, GSM92611, GSM92612, GSM92613, GSM92614, GSM92615, GSM926...
-    ## 
-    ## i Use `spec()` to retrieve the full column specification for this data.
-    ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
-
 ``` r
 eset
 ```
@@ -196,7 +187,7 @@ by calling `SummarizedExperiment(eset)`. But we’ll stick with this
 format since it will serve our purposes just fine.
 
 ![ExpressionSet
-anatomy](https://www.researchgate.net/publication/304005588/figure/fig1/AS:669094365892634@1536535936985/Structure-of-Bioconductors-ExpressionSet-class.png)
+anatomy](https://f1000researchdata.s3.amazonaws.com/manuscripts/9647/99900162-5876-4176-bb80-944aee222558_figure1.gif)
 
 Let’s take a peek at what’s in the **expression matrix**, which we can
 access from the `ExpressionSet` object with `exprs()`. It contains the
@@ -484,7 +475,7 @@ longExpressionMatrix <- exprs(eset) %>%
 longExpressionMatrix
 ```
 
-    ## # A tibble: 1,758,939 x 3
+    ## # A tibble: 1,758,939 × 3
     ##    gene       sample_id Expression
     ##    <chr>      <chr>          <dbl>
     ##  1 1415670_at GSM92610        7.11
@@ -497,7 +488,7 @@ longExpressionMatrix
     ##  8 1415670_at GSM92617        7.22
     ##  9 1415670_at GSM92618        7.22
     ## 10 1415670_at GSM92619        7.12
-    ## # ... with 1,758,929 more rows
+    ## # … with 1,758,929 more rows
 
 Note we’ve transformed the 45101 by 39 matrix to a single column with
 length 1759939. So we have one row for every gene and sample
@@ -529,7 +520,7 @@ Okay, now, let’s try using this function.
 toLonger(exprs(eset))
 ```
 
-    ## # A tibble: 1,758,939 x 3
+    ## # A tibble: 1,758,939 × 3
     ##    gene       sample_id Expression
     ##    <chr>      <chr>          <dbl>
     ##  1 1415670_at GSM92610        7.11
@@ -542,7 +533,7 @@ toLonger(exprs(eset))
     ##  8 1415670_at GSM92617        7.22
     ##  9 1415670_at GSM92618        7.22
     ## 10 1415670_at GSM92619        7.12
-    ## # ... with 1,758,929 more rows
+    ## # … with 1,758,929 more rows
 
 Yay! Now we can use the `toLonger` function to pull out the long format
 expression data.
@@ -609,7 +600,7 @@ expressionDataForGene <- expressionDataForGene %>%
 expressionDataForGene
 ```
 
-    ## # A tibble: 78 x 5
+    ## # A tibble: 78 × 5
     ##    gene       sample_id Expression dev_stage genotype
     ##    <chr>      <chr>          <dbl> <fct>     <fct>   
     ##  1 1416119_at GSM92610        9.00 4_weeks   NrlKO   
@@ -622,7 +613,7 @@ expressionDataForGene
     ##  8 1416119_at GSM92617        9.45 P10       NrlKO   
     ##  9 1416119_at GSM92618       10.1  P10       NrlKO   
     ## 10 1416119_at GSM92619        9.55 P10       NrlKO   
-    ## # ... with 68 more rows
+    ## # … with 68 more rows
 
 Beautiful! Now, what we have is one data frame that contains all the
 metadata for all samples as well as the gene expression for the genes
@@ -651,7 +642,7 @@ toLongerMeta <- function(expset) {
 toLongerMeta(eset)
 ```
 
-    ## # A tibble: 1,758,939 x 5
+    ## # A tibble: 1,758,939 × 5
     ##    gene       sample_id Expression dev_stage genotype
     ##    <chr>      <chr>          <dbl> <fct>     <fct>   
     ##  1 1415670_at GSM92610        7.11 4_weeks   NrlKO   
@@ -664,7 +655,7 @@ toLongerMeta(eset)
     ##  8 1415670_at GSM92617        7.22 P10       NrlKO   
     ##  9 1415670_at GSM92618        7.22 P10       NrlKO   
     ## 10 1415670_at GSM92619        7.12 P10       NrlKO   
-    ## # ... with 1,758,929 more rows
+    ## # … with 1,758,929 more rows
 
 Finally time for more plots. Not lying, promise.
 
@@ -709,7 +700,7 @@ t.test(Expression ~ genotype, boringGene)
     ## 
     ## data:  Expression by genotype
     ## t = 0.18154, df = 36.528, p-value = 0.8569
-    ## alternative hypothesis: true difference in means is not equal to 0
+    ## alternative hypothesis: true difference in means between group NrlKO and group WT is not equal to 0
     ## 95 percent confidence interval:
     ##  -0.4238796  0.5072706
     ## sample estimates:
@@ -732,7 +723,7 @@ t.test(Expression ~ genotype, interestingGene)
     ## 
     ## data:  Expression by genotype
     ## t = -9.8395, df = 36.89, p-value = 7.349e-12
-    ## alternative hypothesis: true difference in means is not equal to 0
+    ## alternative hypothesis: true difference in means between group NrlKO and group WT is not equal to 0
     ## 95 percent confidence interval:
     ##  -2.383952 -1.569715
     ## sample estimates:
@@ -1186,7 +1177,7 @@ topGenesExpressionData <- toLongerMeta(eset) %>%
 topGenesExpressionData # reminder of formatted expression data looks like - for easy graphing
 ```
 
-    ## # A tibble: 120 x 5
+    ## # A tibble: 120 × 5
     ##    gene       sample_id Expression dev_stage genotype
     ##    <chr>      <chr>          <dbl> <fct>     <fct>   
     ##  1 1416041_at GSM92629       13.1  4_weeks   WT      
@@ -1199,7 +1190,7 @@ topGenesExpressionData # reminder of formatted expression data looks like - for 
     ##  8 1416041_at GSM92636        8.29 E16       WT      
     ##  9 1416041_at GSM92637        8.13 P10       WT      
     ## 10 1416041_at GSM92638        8.16 P10       WT      
-    ## # ... with 110 more rows
+    ## # … with 110 more rows
 
 ``` r
 topGenesExpressionData %>% 

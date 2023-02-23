@@ -94,7 +94,7 @@ eset
 
 First, we notice that the object we get out is a specially formatted object of class `ExpressionSet`. It has slots for the assay (expression) data (`assayData`), and sample metadata (`phenoData`). We also have some feature (gene) metadata in a slot called `featureData`. Note that this object format is very similar to the  `SummarizedExperiment` objects we learned about in class - so this data is organized the Bioconductor way, with all data housed in one object (that we are calling `eset`). Note that we could convert this directly into a `SummarizedExperiment` object by calling `SummarizedExperiment(eset)`. But we'll stick with this format since it will serve our purposes just fine.
 
-![ExpressionSet anatomy](https://www.researchgate.net/publication/304005588/figure/fig1/AS:669094365892634@1536535936985/Structure-of-Bioconductors-ExpressionSet-class.png)
+![ExpressionSet anatomy](https://f1000researchdata.s3.amazonaws.com/manuscripts/9647/99900162-5876-4176-bb80-944aee222558_figure1.gif)
 
 Let's take a peek at what's in the **expression matrix**, which we can access from the `ExpressionSet` object with `exprs()`. It contains the sample IDs and their corresponding gene expression profiles. Essentially, each column is a different sample (a tissue, under some treatment, during some developmental stage, etc) and each row is a gene (or a probe). The expression values for all of the genes in a single column collectively constitute the gene expression profile of the sample represented by that column. 
 
